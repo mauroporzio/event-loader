@@ -130,25 +130,28 @@ public class Main
 	{
 		int i = 0;
 		boolean continuar = true;
-		
+		String nombre = new String();
+		String ceo = new String();
+		int aux;
 		while(i<10 && continuar)
 		{
-			System.out.println("\nNombre empresa n°"+i);
-			String nombre = scan.nextLine();
-			System.out.println("\nCEO empresa n°"+i);
-			String ceo = scan.nextLine();
-			int aux;
-			EmpresaEnemiga empresa = new EmpresaEnemiga(nombre, ceo);
+			System.out.println("\nNombre empresa n°"+(i+1));
+			nombre = scan.nextLine();
+			System.out.println("\nCEO empresa n°"+(i+1));
+			ceo = scan.nextLine();
 			
+			
+			EmpresaEnemiga empresa = new EmpresaEnemiga(nombre, ceo);
 			
 			empresas.add(empresa);
 			
 			System.out.println("Desea agregar otra empresa? 1 para SI; 0 para NO");
 			aux = scan.nextInt();
-			
+			scan.nextLine();
 			if(aux == 1)
 			{
 				continuar = true;
+				i++;
 			}
 			else
 			{
@@ -233,7 +236,7 @@ public class Main
 		
 		try
 		{
-			FileWriter file = new FileWriter("/src/data/EmpresasEnemigas.json");
+			FileWriter file = new FileWriter("EmpresasEnemigas.json");
 			
 			while(i < arrayEmpresas.size())
 			{
@@ -251,7 +254,7 @@ public class Main
 			System.out.println("Error: "+ex.toString());
 		}
 		
-		
+		System.out.println("Guardado correcto");
 		
 	}
 	
