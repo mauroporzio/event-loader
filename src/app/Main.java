@@ -1,52 +1,37 @@
 package app;
+
+
 import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Scanner;
+import data.*;
+import org.json.*;
 
-import data.Evento;
-import data.EventoConOpciones;
 
 public class Main
 {
+	public static Scanner scan = new Scanner(System.in);
+	
 	public static void main(String[] args) 
 	{
-		Evento evento1 = new Evento("Evento 1", "Descripcion Evento 1", true);
-		Evento evento2 = new Evento("Evento 2", "Descripcion Evento 2", true);
-		Evento evento3 = new Evento("Evento 3", "Descripcion Evento 3", true);
+		ArrayList<EmpresaEnemiga> empresas = new ArrayList<EmpresaEnemiga>();
+		ArrayList<Evento> eventos = new ArrayList<Evento>();
 		
-		ArrayList<String> arrayOpc = new ArrayList<String>();
-		arrayOpc.add("Opcion 1");
-		arrayOpc.add("Opcion 2");
-		arrayOpc.add("Opcion 3");
 		
-		ArrayList<Integer> arrayDatos = new ArrayList<Integer>();
-		arrayDatos.add(1000);
-		arrayDatos.add(-200);
-		arrayDatos.add(1500);
+		crearEmpresasEnemigas(empresas);
+		empresasToJson(empresas);
+		//crearEventos(eventos);
+		//grabarEvento("eventos.dat", eventos);
 		
-		EventoConOpciones eventoConOpc1 = new EventoConOpciones("Evento con Opciones 1", "Descripcion Evento 1", true, arrayOpc, arrayDatos);
-		EventoConOpciones eventoConOpc2 = new EventoConOpciones("Evento con Opciones 2", "Descripcion Evento 2", true, arrayOpc, arrayDatos);
-		EventoConOpciones eventoConOpc3 = new EventoConOpciones("Evento con Opciones 3", "Descripcion Evento 3", true, arrayOpc, arrayDatos);
-		
-		ArrayList<Evento> arrayEventosSalida = new ArrayList<Evento>();
-		
-		arrayEventosSalida.add(evento1);
-		arrayEventosSalida.add(evento2);
-		arrayEventosSalida.add(evento3);
-		
-		arrayEventosSalida.add(eventoConOpc1);
-		arrayEventosSalida.add(eventoConOpc2);
-		arrayEventosSalida.add(eventoConOpc3);
-		
-		grabarEvento("eventos.dat", arrayEventosSalida);
-		
-		printArrayEventos(leerEventos("eventos.dat"));
+		//printArrayEventos(leerEventos("eventos.dat"));
 
 	}
 	
@@ -140,4 +125,149 @@ public class Main
 		
 		return arrayEventos;
 	}
+	
+	public static void crearEmpresasEnemigas(ArrayList<EmpresaEnemiga> empresas) //crear 10 empresas solo con nombre y CEO
+	{
+		int i = 0;
+		boolean continuar = true;
+		
+		while(i<10 && continuar)
+		{
+			System.out.println("\nNombre empresa n°"+i);
+			String nombre = scan.nextLine();
+			System.out.println("\nCEO empresa n°"+i);
+			String ceo = scan.nextLine();
+			int aux;
+			EmpresaEnemiga empresa = new EmpresaEnemiga(nombre, ceo);
+			
+			
+			empresas.add(empresa);
+			
+			System.out.println("Desea agregar otra empresa? 1 para SI; 0 para NO");
+			aux = scan.nextInt();
+			
+			if(aux == 1)
+			{
+				continuar = true;
+			}
+			else
+			{
+				continuar = false;
+			}
+		}
+	}
+	
+	public static void crearEventos(ArrayList<Evento> eventos)
+	{
+		boolean continuar = true;
+		
+		do
+		{
+			String nombre = new String();
+			String desc = new String();
+			ArrayList<String> arrayOpc = new ArrayList<String>();
+			ArrayList<Integer> arrayDatos = new ArrayList<Integer>();
+			int aux = 0;
+			boolean opc = false;
+			
+			System.out.println("\nNombre del evento:");
+			nombre = scan.nextLine();
+			System.out.println("\nDescripcion del evento: ");
+			desc = scan.nextLine();
+			
+			System.out.println("\nEs un evento con opciones?\n");
+			if(opc)
+			{
+				int i = 0;
+				
+				while(continuar)
+				{
+					System.out.println("\nOpción n°"+i);
+					arrayOpc.add(scan.nextLine());
+					System.out.println("\nDato opción n°"+i);
+					arrayDatos.add(scan.nextInt());
+					System.out.println("\n\nOtra opción? 1 para SI ; 0 para NO");
+					aux = scan.nextInt();
+					
+					if(aux == 1)
+					{
+						continuar = true;
+						i++;
+					}
+					else
+					{
+						continuar = false;
+					}
+					
+				}
+				
+				Evento evento = new EventoConOpciones(nombre, desc, false, arrayOpc, arrayDatos);
+				
+				eventos.add(evento);
+			}
+			else
+			{
+				Evento evento = new Evento(nombre, desc, false);
+				eventos.add(evento);
+			}
+			
+			System.out.println("Desea agregar otro evento? 1 para SI; 0 para NO");
+			aux = scan.nextInt();
+			
+			if(aux == 1)
+			{
+				continuar = true;
+			}
+			else
+			{
+				continuar = false;
+			}
+			
+		}while(continuar);
+	}
+	
+	public static void empresasToJson(ArrayList<EmpresaEnemiga> arrayEmpresas)
+	{
+		JSONObject empresa = new JSONObject();
+		int i = 0;
+		
+		try
+		{
+			FileWriter file = new FileWriter("/src/data/EmpresasEnemigas.json");
+			
+			while(i < arrayEmpresas.size())
+			{
+				empresa.put("Nombre",arrayEmpresas.get(i).getNombre());
+				empresa.put("CEO",arrayEmpresas.get(i).getCEO());
+				
+				file.write(empresa.toString());
+				file.flush();
+				i++;
+			}
+			file.close();
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error: "+ex.toString());
+		}
+		
+		
+		
+	}
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
