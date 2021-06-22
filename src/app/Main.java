@@ -23,7 +23,7 @@ public class Main
 	public static void main(String[] args) 
 	{
 		ArrayList<EmpresaEnemiga> empresas = new ArrayList<EmpresaEnemiga>();
-		ArrayList<Evento> eventos = new ArrayList<Evento>();
+		//ArrayList<Evento> eventos = new ArrayList<Evento>();
 		
 		
 		crearEmpresasEnemigas(empresas);
@@ -231,30 +231,31 @@ public class Main
 	
 	public static void empresasToJson(ArrayList<EmpresaEnemiga> arrayEmpresas)
 	{
-		JSONObject empresa = new JSONObject();
+		
 		int i = 0;
 		
+		JSONArray empresas = new JSONArray();
 		try
 		{
 			FileWriter file = new FileWriter("EmpresasEnemigas.json");
 			
-			while(i < arrayEmpresas.size())
+			for(i=0;i<arrayEmpresas.size();i++)
 			{
-				empresa.put("Nombre",arrayEmpresas.get(i).getNombre());
-				empresa.put("CEO",arrayEmpresas.get(i).getCEO());
+				JSONObject empresa = new JSONObject();
+				empresa.put("Nombre de la empresa: ", arrayEmpresas.get(i).getNombre().toString());
+				empresa.put("CEO: ", arrayEmpresas.get(i).getCEO().toString());
 				
-				file.write(empresa.toString());
-				file.flush();
-				i++;
+				empresas.put(empresa);
 			}
+			
+			file.write(empresas.toString());
 			file.close();
-		}
-		catch(Exception ex)
+			System.out.println("Escritura del archivo completada. Archivo cerrado.");
+			
+		}catch(Exception e)
 		{
-			System.out.println("Error: "+ex.toString());
+			System.out.println("Error en la escritura del archivo");
 		}
-		
-		System.out.println("Guardado correcto");
 		
 	}
 	
