@@ -22,16 +22,17 @@ public class Main
 	
 	public static void main(String[] args) 
 	{
-		ArrayList<EmpresaEnemiga> empresas = new ArrayList<EmpresaEnemiga>();
-		//ArrayList<Evento> eventos = new ArrayList<Evento>();
+		//ArrayList<EmpresaEnemiga> empresas = new ArrayList<EmpresaEnemiga>();
+		ArrayList<Evento> eventos = leerEventos("eventos.dat");
 		
+		printArrayEventos(leerEventos("eventos.dat"));
 		
-		crearEmpresasEnemigas(empresas);
-		empresasToJson(empresas);
-		//crearEventos(eventos);
-		//grabarEvento("eventos.dat", eventos);
+		//crearEmpresasEnemigas(empresas);
+		//empresasToJson(empresas);
+		crearEventos(eventos);
+		grabarEvento("eventos.dat", eventos);
 		
-		//printArrayEventos(leerEventos("eventos.dat"));
+		printArrayEventos(leerEventos("eventos.dat"));
 
 	}
 	
@@ -58,6 +59,10 @@ public class Main
 					System.out.println("Resultado opc "+ i + ":" + eventoOpc.getArrayDatos().get(i));
 				}
 			}
+			else
+			{
+				System.out.println("Valor del evento: "+evento.getValor());
+			}
 			System.out.println("---------------------------------------------------------------");
 		}
 	}
@@ -70,12 +75,7 @@ public class Main
 			
 			try (ObjectOutputStream oos = new ObjectOutputStream(fos))
 			{
-				oos.writeInt(arrayEventosSalida.size());
-				
-				for (Evento evento : arrayEventosSalida)
-				{
-					oos.writeObject(evento);
-				}
+					oos.writeObject(arrayEventosSalida);	
 			}
 			catch (IOException e) 
 			{
@@ -88,22 +88,23 @@ public class Main
 		}
 	}
 	
-	public static ArrayList<Evento> leerEventos(String nombreArchivo)
+	@SuppressWarnings("unchecked")
+	public static ArrayList<Evento> leerEventos(String nomArchiEventos) // devuelve un array list con todos los eventos cargados en el archivo.
 	{
 		ArrayList<Evento> arrayEventos = new ArrayList<Evento>();
 
 		try 
 		{
-			FileInputStream fis = new FileInputStream(nombreArchivo);
+			FileInputStream fis = new FileInputStream(nomArchiEventos);
 			
-			try (ObjectInputStream ois = new ObjectInputStream(fis))
+			try
 			{
-				Integer eventCount = ois.readInt();
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				arrayEventos = (ArrayList<Evento>) ois.readObject();
 				
-				for (int i=0; i < eventCount; i++)
-				{
-					arrayEventos.add((Evento) ois.readObject());
-				}
+				ois.close();
+				fis.close();
+			
 			}
 			catch (EOFException e)
 			{
@@ -172,19 +173,33 @@ public class Main
 			ArrayList<Integer> arrayDatos = new ArrayList<Integer>();
 			int aux = 0;
 			boolean opc = false;
-			
+			double valor = 0;
+			scan = new Scanner(System.in);
 			System.out.println("\nNombre del evento:");
 			nombre = scan.nextLine();
 			System.out.println("\nDescripcion del evento: ");
 			desc = scan.nextLine();
 			
 			System.out.println("\nEs un evento con opciones?\n");
+			
+			aux = scan.nextInt();
+			
+			if(aux == 1)
+			{
+				opc = true;
+			}
+			else
+			{
+				opc = false;
+			}
+			
 			if(opc)
 			{
 				int i = 0;
 				
 				while(continuar)
 				{
+					scan = new Scanner(System.in);
 					System.out.println("\nOpción n°"+i);
 					arrayOpc.add(scan.nextLine());
 					System.out.println("\nDato opción n°"+i);
@@ -204,13 +219,29 @@ public class Main
 					
 				}
 				
+				
 				Evento evento = new EventoConOpciones(nombre, desc, false, arrayOpc, arrayDatos);
 				
 				eventos.add(evento);
 			}
 			else
 			{
-				Evento evento = new Evento(nombre, desc, false);
+				System.out.println("Ingrese un valor para el evento");
+				valor = scan.nextDouble();
+				
+				System.out.println("Ingrese 1 si es un evento activo. De lo contrario ingrese 0.");
+				valor = scan.nextInt();
+				
+				if(aux == 1)
+				{
+					opc = true;
+				}
+				else
+				{
+					opc = false;
+				}
+				
+				Evento evento = new Evento(nombre, desc, opc, valor);
 				eventos.add(evento);
 			}
 			
@@ -242,8 +273,8 @@ public class Main
 			for(i=0;i<arrayEmpresas.size();i++)
 			{
 				JSONObject empresa = new JSONObject();
-				empresa.put("Nombre de la empresa: ", arrayEmpresas.get(i).getNombre().toString());
-				empresa.put("CEO: ", arrayEmpresas.get(i).getCEO().toString());
+				empresa.put("Nombre de la empresa", arrayEmpresas.get(i).getNombre().toString());
+				empresa.put("CEO", arrayEmpresas.get(i).getCEO().toString());
 				
 				empresas.put(empresa);
 			}
