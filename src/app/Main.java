@@ -169,8 +169,8 @@ public class Main
 		{
 			String nombre = new String();
 			String desc = new String();
-			ArrayList<String> arrayOpc = new ArrayList<String>();
-			ArrayList<Integer> arrayDatos = new ArrayList<Integer>();
+			//ArrayList<String> arrayOpc = new ArrayList<String>();
+			//ArrayList<Integer> arrayDatos = new ArrayList<Integer>();
 			int aux = 0;
 			boolean opc = false;
 			double valor = 0;
@@ -180,9 +180,9 @@ public class Main
 			System.out.println("\nDescripcion del evento: ");
 			desc = scan.nextLine();
 			
-			System.out.println("\nEs un evento con opciones?\n");
+			//System.out.println("\nEs un evento con opciones?\n");
 			
-			aux = scan.nextInt();
+			//aux = scan.nextInt();
 			
 			if(aux == 1)
 			{
@@ -195,7 +195,7 @@ public class Main
 			
 			if(opc)
 			{
-				int i = 0;
+				/*int i = 0;
 				
 				while(continuar)
 				{
@@ -222,15 +222,16 @@ public class Main
 				
 				Evento evento = new EventoConOpciones(nombre, desc, false, arrayOpc, arrayDatos);
 				
-				eventos.add(evento);
+				eventos.add(evento);*/
 			}
 			else
 			{
+				scan = new Scanner(System.in);
 				System.out.println("Ingrese un valor para el evento");
 				valor = scan.nextDouble();
 				
 				System.out.println("Ingrese 1 si es un evento activo. De lo contrario ingrese 0.");
-				valor = scan.nextInt();
+				aux = scan.nextInt();
 				
 				if(aux == 1)
 				{

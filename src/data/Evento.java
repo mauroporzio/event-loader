@@ -2,7 +2,7 @@ package data;
 
 import java.io.Serializable;
 
-public class Evento implements IProbabilidad, Serializable
+public class Evento implements Serializable
 {
 	private static final long serialVersionUID = 3L;
 	private String nombre;
@@ -18,9 +18,6 @@ public class Evento implements IProbabilidad, Serializable
 		setValor(valor);
 	}
 	
-	
-	@Override
-	public int calcularProbabilidad() { return (int)Math.floor(Math.random()*(10-0+1)+0)*10; }	//Devuelve un numero entre 0 y 100 en saltos de 10
 	
 	public String getNombre()
 	{
